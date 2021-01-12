@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiPlayground", "ApiPlayground\ApiPlayground.csproj", "{489CD6CE-C6AA-45C7-B6CD-D9BFBEC4D021}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{489CD6CE-C6AA-45C7-B6CD-D9BFBEC4D021}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{489CD6CE-C6AA-45C7-B6CD-D9BFBEC4D021}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{489CD6CE-C6AA-45C7-B6CD-D9BFBEC4D021}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{489CD6CE-C6AA-45C7-B6CD-D9BFBEC4D021}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
