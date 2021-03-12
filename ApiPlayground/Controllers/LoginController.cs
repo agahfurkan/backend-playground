@@ -46,7 +46,7 @@ namespace ApiPlayground.Controllers
             var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"], claims,
                 expires: DateTime.UtcNow.AddDays(1), signingCredentials: signIn);
 
-            return Ok(new HttpReturnModel{Code = 1,Message = new JwtSecurityTokenHandler().WriteToken(token)});
+            return Ok(new ResponseModel { Code = 1, Message = new JwtSecurityTokenHandler().WriteToken(token) });
         }
 
         private async Task<User> GetUser(string username, string password)
@@ -61,10 +61,10 @@ namespace ApiPlayground.Controllers
             if (!ModelState.IsValid) return BadRequest();
             var tempUser = await _contextClass.User.FirstOrDefaultAsync(mUser =>
                 user.Username == mUser.Username);
-            if (tempUser != null) return Ok(new HttpReturnModel {Code = -1, Message = "User Already Exist"});
+            if (tempUser != null) return Ok(new ResponseModel { Code = -1, Message = "User Already Exist" });
             await _contextClass.User.AddAsync(user);
             await _contextClass.SaveChangesAsync();
-            return Ok(new HttpReturnModel {Code = 1, Message = "New User Created"});
+            return Ok(new ResponseModel { Code = 1, Message = "New User Created" });
         }
     }
 }
