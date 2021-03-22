@@ -9,14 +9,14 @@ namespace ApiPlayground.Models
         [Key]
         [JsonIgnore]
         [Column("product_id")]
-        public double ProductId { get; set; }
+        public int ProductId { get; set; }
         [Column("product_name")]
         public string ProductName { get; set; }
         [Column("product_description")]
         public string ProductDescription { get; set; }
         public double Price { get; set; }
         [Column("category_id")]
-        public double CategoryId { get; set; }
+        public int CategoryId { get; set; }
         public double Discount { get; set; }
         public string Picture { get; set; }
     }

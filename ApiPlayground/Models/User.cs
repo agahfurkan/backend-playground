@@ -10,6 +10,6 @@ namespace ApiPlayground.Models
 
         [Required] public string Password { get; set; }
 
-        [Key] [JsonIgnore] [Column("user_id")] public double UserId { get; set; }
+        [Key] [JsonIgnore] [Column("user_id")] public long UserId { get; set; }
     }
 }

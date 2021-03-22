@@ -5,12 +5,12 @@ namespace ApiPlayground.Models
 {
     public class Order
     {
-        
-        [Key] 
-        public double OrderId { get; set; }
-        public double UserId { get; set; }
+
+        [Key]
+        public long OrderId { get; set; }
+        public long UserId { get; set; }
         public DateTime OrderDate { get; set; }
-        public double ProductId { get; set; }
-        public double OrderStatusId { get; set; }
+        public int ProductId { get; set; }
+        public int OrderStatusId { get; set; }
     }
 }

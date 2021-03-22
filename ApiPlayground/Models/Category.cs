@@ -11,7 +11,7 @@ namespace ApiPlayground.Models
     {
         [Key]
         [Column("category_id")]
-        public double CategoryId { get; set; }
+        public int CategoryId { get; set; }
         [Column("category_name")]
         public string CategoryName { get; set; }
     }

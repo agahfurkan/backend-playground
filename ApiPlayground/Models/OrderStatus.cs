@@ -7,9 +7,9 @@ namespace ApiPlayground.Models
     public class OrderStatus
     {
         [Key]
-        public double OrderStatusId { get; set; }
+        public int OrderStatusId { get; set; }
         public string StatusTitle { get; set; }
         public string StatusDescription { get; set; }
-        public double OrderId { get; set; }
+        public long OrderId { get; set; }
     }
 }
