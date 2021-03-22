@@ -20,6 +20,7 @@ namespace ApiPlayground.Controllers
         }
 
         [HttpGet]
+        [Route("getallproducts")]
         public List<Product> GetAllProducts()
         {
             return _dbContextClass.Product.ToList();
