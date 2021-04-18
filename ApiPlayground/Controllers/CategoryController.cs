@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ApiPlayground.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,14 +20,23 @@ namespace ApiPlayground.Controllers
             _dbContext = dbContext;
         }
 
-        [HttpPost("CreateNewCategory")]
+        [HttpPost]
+        [Route("createnewcategory")]
         public async Task<IActionResult> CreateNewCategory(Category category)
         {
             var tempItem = await _dbContext.Category.FirstOrDefaultAsync(c => c.CategoryName == category.CategoryName);
-            if (tempItem != null) return Ok(new ResponseModel {Code = -1, Message = "Category already exist!"});
+            if (tempItem != null) return Ok(new ResponseModel { Code = -1, Message = "Category already exist!" });
             await _dbContext.Category.AddAsync(category);
             await _dbContext.SaveChangesAsync();
-            return Ok(new ResponseModel {Code = 1, Message = "New Category Created Successfully."});
+            return Ok(new ResponseModel { Code = 1, Message = "New Category Created Successfully." });
         }
+
+        [HttpGet]
+        [Route("getallcategories")]
+        public List<Category> GetAllCategories()
+        {
+            return _dbContext.Category.ToList();
+        }
+
     }
 }

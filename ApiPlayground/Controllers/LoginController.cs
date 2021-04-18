@@ -28,7 +28,7 @@ namespace ApiPlayground.Controllers
         public async Task<IActionResult> LoginUser(User user)
         {
             var tempUser = await GetUser(user.Username, user.Password);
-            if (tempUser == null) return BadRequest("Invalid credentials");
+            if (tempUser == null) return Ok(new ResponseModel { Code = -1, Message = "Invalid credentials" });
 
             var claims = new[]
             {
@@ -65,6 +65,41 @@ namespace ApiPlayground.Controllers
             await _contextClass.User.AddAsync(user);
             await _contextClass.SaveChangesAsync();
             return Ok(new ResponseModel { Code = 1, Message = "New User Created" });
+        }
+        [HttpPost]
+        [Route("validatetoken")]
+        public IActionResult ValidateToken(ValidateTokenModel validateTokenModel)
+        {
+            try
+            {
+                var tokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("1ea344fec30e4ebd9dcea52dce55a0c0")),
+                    ValidateLifetime = true
+                };
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                SecurityToken securityToken;
+                var principal = tokenHandler.ValidateToken(validateTokenModel.Token, tokenValidationParameters, out securityToken);
+                var jwtSecurityToken = securityToken as JwtSecurityToken;
+
+                if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return Ok(new ResponseModel { Code = -1, Message = "Token invalid" });
+                }
+                else
+                {
+                    return Ok(new ResponseModel { Code = 1, Message = "Token is valid" });
+                }
+            }
+            catch (Exception e)
+            {
+                return Ok(new ResponseModel { Code = -1, Message = "Token invalid" });
+            }
+
         }
     }
 }
