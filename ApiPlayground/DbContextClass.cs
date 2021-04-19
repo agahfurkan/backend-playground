@@ -18,6 +18,6 @@ namespace ApiPlayground
         public DbSet<OrderStatus> OrderStatus { get; set; }
 
         public DbSet<Order> Order { get; set; }
-        public DbSet<ActiveCart> ActiveCart { get; set; }
+        public DbSet<Cart> ActiveCart { get; set; }
     }
 }

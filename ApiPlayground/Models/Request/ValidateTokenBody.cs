@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ApiPlayground.Models
 {
-    public class ValidateTokenModel
+    public class ValidateTokenBody
     {
         public string Token { get; set; }
     }

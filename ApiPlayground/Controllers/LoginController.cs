@@ -68,7 +68,7 @@ namespace ApiPlayground.Controllers
         }
         [HttpPost]
         [Route("validatetoken")]
-        public IActionResult ValidateToken(ValidateTokenModel validateTokenModel)
+        public IActionResult ValidateToken(ValidateTokenBody validateTokenModel)
         {
             try
             {
