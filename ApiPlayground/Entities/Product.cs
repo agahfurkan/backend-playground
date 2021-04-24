@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace ApiPlayground.Models
+namespace ApiPlayground.Entities
 {
     public class Product
     {
@@ -10,13 +10,15 @@ namespace ApiPlayground.Models
         [JsonIgnore]
         [Column("product_id")]
         public int ProductId { get; set; }
-        [Column("product_name")]
-        public string ProductName { get; set; }
-        [Column("product_description")]
-        public string ProductDescription { get; set; }
+
+        [Column("product_name")] public string ProductName { get; set; }
+
+        [Column("product_description")] public string ProductDescription { get; set; }
+
         public double Price { get; set; }
-        [Column("category_id")]
-        public int CategoryId { get; set; }
+
+        [Column("category_id")] public int CategoryId { get; set; }
+
         public double Discount { get; set; }
         public string Picture { get; set; }
     }

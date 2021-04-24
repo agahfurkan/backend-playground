@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace ApiPlayground.Models
+namespace ApiPlayground.Entities
 {
     public class User
     {

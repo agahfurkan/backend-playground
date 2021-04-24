@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using ApiPlayground.Entities;
 using ApiPlayground.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,19 +25,19 @@ namespace ApiPlayground.Controllers
             _contextClass = contextClass;
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> LoginUser(User user)
+        [HttpPost("Login")]
+        public async Task<IActionResult> LoginUser(LoginUserDto loginUserDto)
         {
-            var tempUser = await GetUser(user.Username, user.Password);
-            if (tempUser == null) return Ok(new ResponseModel { Code = -1, Message = "Invalid credentials" });
+            var tempUser = await GetUser(loginUserDto.Username, loginUserDto.Password);
+            if (tempUser == null) return Ok(new ResponseModel {Code = -1, Message = "Invalid credentials"});
 
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                new Claim("username", user.Username),
-                new Claim("password", user.Password)
+                new Claim("username", loginUserDto.Username),
+                new Claim("password", loginUserDto.Password)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -46,7 +47,7 @@ namespace ApiPlayground.Controllers
             var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"], claims,
                 expires: DateTime.UtcNow.AddDays(1), signingCredentials: signIn);
 
-            return Ok(new ResponseModel { Code = 1, Message = new JwtSecurityTokenHandler().WriteToken(token) });
+            return Ok(new ResponseModel {Code = 1, Message = new JwtSecurityTokenHandler().WriteToken(token)});
         }
 
         private async Task<User> GetUser(string username, string password)
@@ -55,20 +56,25 @@ namespace ApiPlayground.Controllers
                 user.Username == username && user.Password == password);
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> RegisterNewUser(User user)
+        [HttpPost("Register")]
+        public async Task<IActionResult> RegisterNewUser(RegisterNewUserDto registerNewUserDto)
         {
             if (!ModelState.IsValid) return BadRequest();
             var tempUser = await _contextClass.User.FirstOrDefaultAsync(mUser =>
-                user.Username == mUser.Username);
-            if (tempUser != null) return Ok(new ResponseModel { Code = -1, Message = "User Already Exist" });
-            await _contextClass.User.AddAsync(user);
+                registerNewUserDto.Username == mUser.Username);
+            if (tempUser != null) return Ok(new ResponseModel {Code = -1, Message = "User Already Exist"});
+            await _contextClass.User.AddAsync(new User
+                {
+                    Username = registerNewUserDto.Username,
+                    Password = registerNewUserDto.Password
+                }
+            );
             await _contextClass.SaveChangesAsync();
-            return Ok(new ResponseModel { Code = 1, Message = "New User Created" });
+            return Ok(new ResponseModel {Code = 1, Message = "New User Created"});
         }
-        [HttpPost]
-        [Route("validatetoken")]
-        public IActionResult ValidateToken(ValidateTokenBody validateTokenModel)
+
+        [HttpPost("ValidateToken")]
+        public IActionResult ValidateToken(ValidateTokenDto validateTokenDto)
         {
             try
             {
@@ -77,29 +83,26 @@ namespace ApiPlayground.Controllers
                     ValidateAudience = false,
                     ValidateIssuer = false,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("1ea344fec30e4ebd9dcea52dce55a0c0")),
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
                     ValidateLifetime = true
                 };
 
                 var tokenHandler = new JwtSecurityTokenHandler();
                 SecurityToken securityToken;
-                var principal = tokenHandler.ValidateToken(validateTokenModel.Token, tokenValidationParameters, out securityToken);
+                var principal = tokenHandler.ValidateToken(validateTokenDto.Token, tokenValidationParameters,
+                    out securityToken);
                 var jwtSecurityToken = securityToken as JwtSecurityToken;
 
-                if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return Ok(new ResponseModel { Code = -1, Message = "Token invalid" });
-                }
-                else
-                {
-                    return Ok(new ResponseModel { Code = 1, Message = "Token is valid" });
-                }
+                if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                    StringComparison.InvariantCultureIgnoreCase))
+                    return Ok(new ResponseModel {Code = -1, Message = "Token invalid"});
+                return Ok(new ResponseModel {Code = 1, Message = "Token is valid"});
             }
             catch (Exception e)
             {
-                return Ok(new ResponseModel { Code = -1, Message = "Token invalid" });
+                return Ok(new ResponseModel {Code = -1, Message = "Token invalid"});
             }
-
         }
     }
 }

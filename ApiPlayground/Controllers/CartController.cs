@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApiPlayground.Entities;
 using ApiPlayground.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ namespace ApiPlayground.Controllers
         {
             await _dbContextClass.ActiveCart.AddAsync(activeCart);
             await _dbContextClass.SaveChangesAsync();
-            return Ok(new ResponseModel { Code = 1, Message = "Product Added to Cart Successfully" });
+            return Ok(new ResponseModel {Code = 1, Message = "Product Added to Cart Successfully"});
         }
 
         [HttpPost("RemoveProductFromCart")]
@@ -34,10 +35,10 @@ namespace ApiPlayground.Controllers
             var tempProduct =
                 await _dbContextClass.ActiveCart.FirstOrDefaultAsync(
                     p => p.ProductId == activeCart.ProductId && p.UserId == activeCart.UserId);
-            if (tempProduct == null) return Ok(new ResponseModel { Code = -1, Message = "Product Not Found!" });
+            if (tempProduct == null) return Ok(new ResponseModel {Code = -1, Message = "Product Not Found!"});
             _dbContextClass.ActiveCart.Remove(tempProduct);
             await _dbContextClass.SaveChangesAsync();
-            return Ok(new ResponseModel { Code = 1, Message = "Product Removed From Cart Successfully" });
+            return Ok(new ResponseModel {Code = 1, Message = "Product Removed From Cart Successfully"});
         }
 
         [HttpPost]
@@ -45,10 +46,7 @@ namespace ApiPlayground.Controllers
         public ActionResult<List<Cart>> GetUserCart(GetCartBody getCartBody)
         {
             var user = _dbContextClass.User.FirstOrDefault(u => u.Username == getCartBody.UserName);
-            if (user == null)
-            {
-                return Ok(new ResponseModel { Code = -1, Message = "Invalid Username" });
-            }
+            if (user == null) return Ok(new ResponseModel {Code = -1, Message = "Invalid Username"});
             return _dbContextClass.ActiveCart.Where(cart => cart.UserId == user.UserId).ToList();
         }
     }

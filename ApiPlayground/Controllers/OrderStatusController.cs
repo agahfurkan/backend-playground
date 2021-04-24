@@ -1,8 +1,8 @@
-﻿using ApiPlayground.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ApiPlayground.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ApiPlayground.Controllers
 {

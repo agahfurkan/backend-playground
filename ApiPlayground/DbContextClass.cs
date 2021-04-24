@@ -1,4 +1,4 @@
-﻿using ApiPlayground.Models;
+﻿using ApiPlayground.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiPlayground
@@ -9,6 +9,7 @@ namespace ApiPlayground
             : base(options)
         {
         }
+
         public DbSet<User> User { get; set; }
 
         public DbSet<Product> Product { get; set; }

@@ -1,9 +1,8 @@
-﻿using ApiPlayground.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ApiPlayground.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ApiPlayground.Controllers
 {
@@ -12,7 +11,7 @@ namespace ApiPlayground.Controllers
     [Authorize]
     public class ProductController : Controller
     {
-        private DbContextClass _dbContextClass;
+        private readonly DbContextClass _dbContextClass;
 
         public ProductController(DbContextClass dbContextClass)
         {
@@ -20,11 +19,11 @@ namespace ApiPlayground.Controllers
         }
 
         [HttpGet]
-        [Route("getallproducts")]
-        public List<Product> GetAllProducts()
+        [Route("GetProducts")]
+        public List<Product> GetProducts([FromQuery] int categoryId)
         {
-            return _dbContextClass.Product.ToList();
+            var productList = _dbContextClass.Product.Where(product => product.CategoryId == categoryId);
+            return productList.ToList();
         }
-
     }
 }
