@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ApiPlayground.Entities;
 using ApiPlayground.Models;
+using ApiPlayground.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,10 +27,11 @@ namespace ApiPlayground.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> LoginUser(LoginUserDto loginUserDto)
+        public async Task<ActionResult<LoginUserResponse>> LoginUser(LoginUserDto loginUserDto)
         {
             var tempUser = await GetUser(loginUserDto.Username, loginUserDto.Password);
-            if (tempUser == null) return Ok(new ResponseModel {Code = -1, Message = "Invalid credentials"});
+            if (tempUser == null)
+                return Ok(new LoginUserResponse {IsSuccess = false, Message = "Invalid credentials"});
 
             var claims = new[]
             {
@@ -47,34 +49,36 @@ namespace ApiPlayground.Controllers
             var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"], claims,
                 expires: DateTime.UtcNow.AddDays(1), signingCredentials: signIn);
 
-            return Ok(new ResponseModel {Code = 1, Message = new JwtSecurityTokenHandler().WriteToken(token)});
+            return Ok(new LoginUserResponse
+                {IsSuccess = true, Token = new JwtSecurityTokenHandler().WriteToken(token), UserId = tempUser.UserId});
         }
 
-        private async Task<User> GetUser(string username, string password)
+        private async Task<UserEntity> GetUser(string username, string password)
         {
             return await _contextClass.User.FirstOrDefaultAsync(user =>
                 user.Username == username && user.Password == password);
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterNewUser(RegisterNewUserDto registerNewUserDto)
+        public async Task<ActionResult<GenericResponseModel>> RegisterNewUser(RegisterNewUserDto registerNewUserDto)
         {
             if (!ModelState.IsValid) return BadRequest();
             var tempUser = await _contextClass.User.FirstOrDefaultAsync(mUser =>
                 registerNewUserDto.Username == mUser.Username);
-            if (tempUser != null) return Ok(new ResponseModel {Code = -1, Message = "User Already Exist"});
-            await _contextClass.User.AddAsync(new User
+            if (tempUser != null)
+                return Ok(new GenericResponseModel {IsSuccess = false, Message = "User Already Exist"});
+            await _contextClass.User.AddAsync(new UserEntity
                 {
                     Username = registerNewUserDto.Username,
                     Password = registerNewUserDto.Password
                 }
             );
             await _contextClass.SaveChangesAsync();
-            return Ok(new ResponseModel {Code = 1, Message = "New User Created"});
+            return Ok(new GenericResponseModel {IsSuccess = true, Message = "New User Created"});
         }
 
         [HttpPost("ValidateToken")]
-        public IActionResult ValidateToken(ValidateTokenDto validateTokenDto)
+        public ActionResult<GenericResponseModel> ValidateToken(ValidateTokenDto validateTokenDto)
         {
             try
             {
@@ -96,12 +100,12 @@ namespace ApiPlayground.Controllers
 
                 if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
                     StringComparison.InvariantCultureIgnoreCase))
-                    return Ok(new ResponseModel {Code = -1, Message = "Token invalid"});
-                return Ok(new ResponseModel {Code = 1, Message = "Token is valid"});
+                    return Ok(new GenericResponseModel {IsSuccess = false, Message = "Token invalid"});
+                return Ok(new GenericResponseModel {IsSuccess = true, Message = "Token is valid"});
             }
             catch (Exception e)
             {
-                return Ok(new ResponseModel {Code = -1, Message = "Token invalid"});
+                return Ok(new GenericResponseModel {IsSuccess = false, Message = "Token invalid"});
             }
         }
     }

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using ApiPlayground.Entities;
 using ApiPlayground.Models;
+using ApiPlayground.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,32 +22,35 @@ namespace ApiPlayground.Controllers
         }
 
         [HttpPost("AddProductToCart")]
-        public async Task<IActionResult> AddProductToCart(Cart activeCart)
+        public async Task<ActionResult<GenericResponseModel>> AddProductToCart(ModifyCartDto modifyCartDto)
         {
-            await _dbContextClass.ActiveCart.AddAsync(activeCart);
+            await _dbContextClass.ActiveCart.AddAsync(new CartEntity
+                {ProductId = modifyCartDto.ProductId, UserId = modifyCartDto.UserId});
             await _dbContextClass.SaveChangesAsync();
-            return Ok(new ResponseModel {Code = 1, Message = "Product Added to Cart Successfully"});
+            return Ok(new GenericResponseModel {IsSuccess = true, Message = "Product Added to Cart Successfully"});
         }
 
         [HttpPost("RemoveProductFromCart")]
-        public async Task<IActionResult> RemoveProductFromCart(Cart activeCart)
+        public async Task<ActionResult<GenericResponseModel>> RemoveProductFromCart(ModifyCartDto modifyCartDto)
         {
             var tempProduct =
                 await _dbContextClass.ActiveCart.FirstOrDefaultAsync(
-                    p => p.ProductId == activeCart.ProductId && p.UserId == activeCart.UserId);
-            if (tempProduct == null) return Ok(new ResponseModel {Code = -1, Message = "Product Not Found!"});
+                    p => p.ProductId == modifyCartDto.ProductId && p.UserId == modifyCartDto.UserId);
+            if (tempProduct == null)
+                return Ok(new GenericResponseModel {IsSuccess = false, Message = "Product Not Found!"});
             _dbContextClass.ActiveCart.Remove(tempProduct);
             await _dbContextClass.SaveChangesAsync();
-            return Ok(new ResponseModel {Code = 1, Message = "Product Removed From Cart Successfully"});
+            return Ok(new GenericResponseModel {IsSuccess = true, Message = "Product Removed From Cart Successfully"});
         }
 
-        [HttpPost]
-        [Route("getusercart")]
-        public ActionResult<List<Cart>> GetUserCart(GetCartBody getCartBody)
+        [HttpPost("GetUserCart")]
+        public ActionResult<GetUserCartResponse> GetUserCart(int userId)
         {
-            var user = _dbContextClass.User.FirstOrDefault(u => u.Username == getCartBody.UserName);
-            if (user == null) return Ok(new ResponseModel {Code = -1, Message = "Invalid Username"});
-            return _dbContextClass.ActiveCart.Where(cart => cart.UserId == user.UserId).ToList();
+            var user = _dbContextClass.User.FirstOrDefault(u => u.UserId == userId);
+            if (user == null) return Ok(new GenericResponseModel {IsSuccess = false, Message = "User Not Found"});
+            var cartList = _dbContextClass.ActiveCart.Where(cart => cart.UserId == user.UserId).ToList()
+                .ConvertAll(c => new UserCart {CartId = c.Id, ProductId = c.ProductId});
+            return new GetUserCartResponse {IsSuccess = true, CartList = cartList};
         }
     }
 }

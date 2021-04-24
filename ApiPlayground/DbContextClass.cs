@@ -10,15 +10,15 @@ namespace ApiPlayground
         {
         }
 
-        public DbSet<User> User { get; set; }
+        public DbSet<UserEntity> User { get; set; }
 
-        public DbSet<Product> Product { get; set; }
+        public DbSet<ProductEntity> Product { get; set; }
 
-        public DbSet<Category> Category { get; set; }
+        public DbSet<CategoryEntity> Category { get; set; }
 
-        public DbSet<OrderStatus> OrderStatus { get; set; }
+        public DbSet<OrderStatusEntity> OrderStatus { get; set; }
 
-        public DbSet<Order> Order { get; set; }
-        public DbSet<Cart> ActiveCart { get; set; }
+        public DbSet<OrderEntity> Order { get; set; }
+        public DbSet<CartEntity> ActiveCart { get; set; }
     }
 }

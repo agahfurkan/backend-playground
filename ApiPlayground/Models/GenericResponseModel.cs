@@ -1,8 +1,8 @@
 ﻿namespace ApiPlayground.Models
 {
-    public class ResponseModel
+    public class GenericResponseModel
     {
-        public int Code { get; set; }
+        public bool IsSuccess { get; set; }
         public string Message { get; set; }
     }
 }

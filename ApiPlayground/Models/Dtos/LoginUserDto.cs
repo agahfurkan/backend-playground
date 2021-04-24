@@ -1,9 +1,8 @@
-﻿namespace ApiPlayground.Models
+﻿namespace ApiPlayground.Models.Dtos
 {
-    public class RegisterNewUserDto
+    public class LoginUserDto
     {
         public string Username { get; set; }
-
         public string Password { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace ApiPlayground.Entities
 {
-    public class User
+    public class UserEntity
     {
         [Required] public string Username { get; set; }
 

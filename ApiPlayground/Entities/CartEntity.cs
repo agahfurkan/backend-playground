@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace ApiPlayground.Entities
 {
     [Table("active_cart")]
-    public class Cart
+    public class CartEntity
     {
         [Key] [Column("id")] [JsonIgnore] public int Id { get; set; }
 

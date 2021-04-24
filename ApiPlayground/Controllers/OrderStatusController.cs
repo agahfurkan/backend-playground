@@ -19,7 +19,7 @@ namespace ApiPlayground.Controllers
         }
 
         [HttpGet]
-        public List<OrderStatus> getOrderStatus()
+        public List<OrderStatusEntity> getOrderStatus()
         {
             return _contextClass.OrderStatus.ToList();
         }

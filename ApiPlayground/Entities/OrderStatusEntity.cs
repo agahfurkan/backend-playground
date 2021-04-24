@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ApiPlayground.Entities
 {
     [Table("order_status")]
-    public class OrderStatus
+    public class OrderStatusEntity
     {
         [Key] public int OrderStatusId { get; set; }
 

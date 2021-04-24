@@ -1,4 +1,4 @@
-﻿namespace ApiPlayground.Models
+﻿namespace ApiPlayground.Models.Dtos
 {
     public class CreateNewCategoryDto
     {

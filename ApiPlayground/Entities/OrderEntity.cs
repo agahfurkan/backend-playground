@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ApiPlayground.Entities
 {
-    public class Order
+    public class OrderEntity
     {
         [Key] public long OrderId { get; set; }
 

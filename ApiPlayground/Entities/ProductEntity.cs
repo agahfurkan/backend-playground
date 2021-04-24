@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace ApiPlayground.Entities
 {
-    public class Product
+    public class ProductEntity
     {
         [Key]
         [JsonIgnore]

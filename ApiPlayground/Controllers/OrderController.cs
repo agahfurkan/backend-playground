@@ -18,11 +18,11 @@ namespace ApiPlayground.Controllers
             _dbContextClass = dbContextClass;
         }
 
-        [HttpPost("createneworder")]
-        public async Task<IActionResult> CreateNewOrder(Order newOrder)
+        [HttpPost("CreateNewOrder")]
+        public async Task<IActionResult> CreateNewOrder(OrderEntity newOrder)
         {
             await _dbContextClass.Order.AddAsync(newOrder);
-            return Ok(new ResponseModel {Code = 1, Message = "New Order Created Successfully!"});
+            return Ok(new GenericResponseModel {IsSuccess = true, Message = "New Order Created Successfully!"});
         }
     }
 }
