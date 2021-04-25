@@ -34,5 +34,27 @@ namespace ApiPlayground.Controllers
                 });
             return Ok(new GetProductsResponse {IsSuccess = true, ProductList = productList});
         }
+
+        [HttpGet]
+        [Route("GetProductDetail")]
+        public ActionResult<GetProductDetailResponse> GetProductDetail([FromQuery] int productId)
+        {
+            var p = _dbContextClass.Product.FirstOrDefault(product => product.ProductId == productId);
+            if (p == null) return Ok(new GetProductsResponse {IsSuccess = false, Message = "No Product Found"});
+            return Ok(new GetProductDetailResponse
+            {
+                IsSuccess = true,
+                ProductDetail = new ProductDetail
+                {
+                    CategoryId = p.CategoryId,
+                    Discount = p.Discount,
+                    Picture = p.Picture,
+                    Price = p.Price,
+                    ProductDescription = p.ProductDescription,
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName
+                }
+            });
+        }
     }
 }

@@ -26,7 +26,7 @@ namespace ApiPlayground
                 Required = true,
                 Schema = new OpenApiSchema
                 {
-                    Type = "String"
+                    Type = "string"
                 }
             });
         }
