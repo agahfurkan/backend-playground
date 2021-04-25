@@ -1,15 +1,8 @@
-using System.Collections.Generic;
-
-namespace ApiPlayground.Models
+namespace ApiPlayground.Models.Dtos
 {
-    public class GetUserCartResponse : GenericResponseModel
+    public class AddProductToCartDto
     {
-        public List<UserCart> CartList { get; set; }
-    }
-
-    public class UserCart
-    {
-        public int CartId { get; set; }
+        public long UserId { get; set; }
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string ProductDescription { get; set; }
