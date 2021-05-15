@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using ApiPlayground.Entities;
+using ApiPlayground.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,17 +12,17 @@ namespace ApiPlayground.Controllers
     [Authorize]
     public class OrderStatusController : ControllerBase
     {
-        private readonly DbContextClass _contextClass;
+        private readonly IOrderStatusRepository _iOrderStatusRepository;
 
-        public OrderStatusController(DbContextClass contextClass)
+        public OrderStatusController(IOrderStatusRepository iOrderStatusRepository)
         {
-            _contextClass = contextClass;
+            _iOrderStatusRepository = iOrderStatusRepository;
         }
 
         [HttpGet]
-        public List<OrderStatusEntity> getOrderStatus()
+        public async Task<List<OrderStatusEntity>> GetOrderStatus()
         {
-            return _contextClass.OrderStatus.ToList();
+            return await _iOrderStatusRepository.GetAllAsync();
         }
     }
 }

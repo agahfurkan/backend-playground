@@ -13,9 +13,9 @@ namespace ApiPlayground.Repositories
             _dbContextClass = dbContextClass;
         }
 
-        public Task<UserEntity> GetUserByUsername(string username)
+        public async Task<UserEntity> GetUserByUsernameAsync(string username)
         {
-            return _dbContextClass.User.FirstOrDefaultAsync(u => u.Username == username);
+            return await _dbContextClass.User.FirstOrDefaultAsync(u => u.Username == username);
         }
         
     }

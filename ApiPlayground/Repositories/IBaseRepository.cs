@@ -5,9 +5,9 @@ namespace ApiPlayground.Repositories
 {
     public interface IBaseRepository<T>
     {
-        Task<List<T>> GetAll();
-        Task<T> Get(int id);
-        Task<T> Add(T entity);
-        Task<T> Delete(int id);
+        Task<List<T>> GetAllAsync();
+        Task<T> GetAsync(int id);
+        Task<T> AddAsync(T entity);
+        Task<T> DeleteAsync(int id);
     }
 }

@@ -1,5 +1,6 @@
-﻿using System.Linq;
+﻿using System.Threading.Tasks;
 using ApiPlayground.Models;
+using ApiPlayground.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,19 +11,19 @@ namespace ApiPlayground.Controllers
     [Authorize]
     public class ProductController : Controller
     {
-        private readonly DbContextClass _dbContextClass;
+        private readonly IProductRepository _iProductRepository;
 
-        public ProductController(DbContextClass dbContextClass)
+        public ProductController(IProductRepository iProductRepository)
         {
-            _dbContextClass = dbContextClass;
+            _iProductRepository = iProductRepository;
         }
 
         [HttpGet]
         [Route("GetProducts")]
-        public ActionResult<GetProductsResponse> GetProducts([FromQuery] int categoryId)
+        public async Task<ActionResult<GetProductsResponse>> GetProducts([FromQuery] int categoryId)
         {
-            var productList = _dbContextClass.Product.Where(product => product.CategoryId == categoryId).ToList()
-                .ConvertAll(p => new Product
+            var productList = (await _iProductRepository.GetProductsByCategoryId(categoryId)).ConvertAll(p =>
+                new Product
                 {
                     CategoryId = p.CategoryId,
                     Discount = p.Discount,
@@ -37,9 +38,9 @@ namespace ApiPlayground.Controllers
 
         [HttpGet]
         [Route("GetProductDetail")]
-        public ActionResult<GetProductDetailResponse> GetProductDetail([FromQuery] int productId)
+        public async Task<ActionResult<GetProductDetailResponse>> GetProductDetail([FromQuery] int productId)
         {
-            var p = _dbContextClass.Product.FirstOrDefault(product => product.ProductId == productId);
+            var p = await _iProductRepository.GetAsync(productId);
             if (p == null) return Ok(new GetProductsResponse {IsSuccess = false, Message = "No Product Found"});
             return Ok(new GetProductDetailResponse
             {

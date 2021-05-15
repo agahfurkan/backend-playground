@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using ApiPlayground.Entities;
 using ApiPlayground.Models;
+using ApiPlayground.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,17 +12,17 @@ namespace ApiPlayground.Controllers
     [Authorize]
     public class OrderController : ControllerBase
     {
-        private readonly DbContextClass _dbContextClass;
+        private readonly IOrderRepository _iOrderRepository;
 
-        public OrderController(DbContextClass dbContextClass)
+        public OrderController(IOrderRepository iOrderRepository)
         {
-            _dbContextClass = dbContextClass;
+            _iOrderRepository = iOrderRepository;
         }
 
         [HttpPost("CreateNewOrder")]
         public async Task<IActionResult> CreateNewOrder(OrderEntity newOrder)
         {
-            await _dbContextClass.Order.AddAsync(newOrder);
+            //await _iOrderRepository.AddAsync();
             return Ok(new GenericResponseModel {IsSuccess = true, Message = "New Order Created Successfully!"});
         }
     }

@@ -7,7 +7,7 @@ namespace ApiPlayground.Repositories
 {
     public interface IAuthRepository
     {
-        string GenerateJwtToken(string Username, string Password);
-        bool ValidateJwtToken(string Token);
+        string GenerateJwtToken(string username, string password);
+        bool ValidateJwtToken(string token);
     }
 }

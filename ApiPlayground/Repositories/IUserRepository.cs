@@ -5,6 +5,6 @@ namespace ApiPlayground.Repositories
 {
     public interface IUserRepository : IBaseRepository<UserEntity>
     {
-        Task<UserEntity> GetUserByUsername(string username);
+        Task<UserEntity> GetUserByUsernameAsync(string username);
     }
 }

@@ -19,6 +19,6 @@ namespace ApiPlayground
         public DbSet<OrderStatusEntity> OrderStatus { get; set; }
 
         public DbSet<OrderEntity> Order { get; set; }
-        public DbSet<CartEntity> ActiveCart { get; set; }
+        public DbSet<CartEntity> Cart { get; set; }
     }
 }

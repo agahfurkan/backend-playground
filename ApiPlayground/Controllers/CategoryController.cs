@@ -1,11 +1,10 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ApiPlayground.Entities;
 using ApiPlayground.Models;
 using ApiPlayground.Models.Dtos;
+using ApiPlayground.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ApiPlayground.Controllers
 {
@@ -14,30 +13,28 @@ namespace ApiPlayground.Controllers
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
-        private readonly DbContextClass _dbContext;
+        private readonly ICategoryRepository _iCategoryRepository;
 
-        public CategoryController(DbContextClass dbContext)
+        public CategoryController(ICategoryRepository iCategoryRepository)
         {
-            _dbContext = dbContext;
+            _iCategoryRepository = iCategoryRepository;
         }
 
         [HttpPost("CreateNewCategory")]
         public async Task<ActionResult<GenericResponseModel>> CreateNewCategory(
             CreateNewCategoryDto createNewCategoryDto)
         {
-            var tempItem =
-                await _dbContext.Category.FirstOrDefaultAsync(c => c.CategoryName == createNewCategoryDto.CategoryName);
+            var tempItem = _iCategoryRepository.GetCategoryByName(createNewCategoryDto.CategoryName);
             if (tempItem != null)
                 return Ok(new GenericResponseModel {IsSuccess = false, Message = "Category already exist!"});
-            await _dbContext.Category.AddAsync(new CategoryEntity {CategoryName = createNewCategoryDto.CategoryName});
-            await _dbContext.SaveChangesAsync();
+            await _iCategoryRepository.AddAsync(new CategoryEntity {CategoryName = createNewCategoryDto.CategoryName});
             return Ok(new GenericResponseModel {IsSuccess = true, Message = "New Category Created Successfully."});
         }
 
         [HttpGet("GetAllCategories")]
-        public ActionResult<GetAllCategoriesResponse> GetAllCategories()
+        public async Task<ActionResult<GetAllCategoriesResponse>> GetAllCategories()
         {
-            var categoryList = _dbContext.Category.ToList().ConvertAll(c => new Category
+            var categoryList = (await _iCategoryRepository.GetAllAsync()).ConvertAll(c => new Category
                 {CategoryId = c.CategoryId, CategoryName = c.CategoryName});
             return Ok(new GetAllCategoriesResponse {IsSuccess = true, CategoryList = categoryList});
         }
