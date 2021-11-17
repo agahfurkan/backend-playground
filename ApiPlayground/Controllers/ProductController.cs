@@ -20,20 +20,20 @@ namespace ApiPlayground.Controllers
 
         [HttpGet]
         [Route("GetProducts")]
-        public async Task<ActionResult<GetProductsResponse>> GetProducts([FromQuery] int categoryId)
+        public async Task<ActionResult<GetProductsResponse>> GetProducts([FromQuery] int categoryId, [FromQuery] int pageIndex, [FromQuery] int pageLength)
         {
-            var productList = (await _iProductRepository.GetProductsByCategoryId(categoryId)).ConvertAll(p =>
-                new Product
-                {
-                    CategoryId = p.CategoryId,
-                    Discount = p.Discount,
-                    Picture = p.Picture,
-                    Price = p.Price,
-                    ProductDescription = p.ProductDescription,
-                    ProductId = p.ProductId,
-                    ProductName = p.ProductName
-                });
-            return Ok(new GetProductsResponse {IsSuccess = true, ProductList = productList});
+            var productList = (await _iProductRepository.GetProductsByCategoryId(categoryId: categoryId, pageIndex: pageIndex, pageLength: pageLength)).ConvertAll(p =>
+                 new Product
+                 {
+                     CategoryId = p.CategoryId,
+                     Discount = p.Discount,
+                     Picture = p.Picture,
+                     Price = p.Price,
+                     ProductDescription = p.ProductDescription,
+                     ProductId = p.ProductId,
+                     ProductName = p.ProductName
+                 });
+            return Ok(new GetProductsResponse { IsSuccess = true, ProductList = productList });
         }
 
         [HttpGet]
@@ -41,7 +41,7 @@ namespace ApiPlayground.Controllers
         public async Task<ActionResult<GetProductDetailResponse>> GetProductDetail([FromQuery] int productId)
         {
             var p = await _iProductRepository.GetAsync(productId);
-            if (p == null) return Ok(new GetProductsResponse {IsSuccess = false, Message = "No Product Found"});
+            if (p == null) return Ok(new GetProductsResponse { IsSuccess = false, Message = "No Product Found" });
             return Ok(new GetProductDetailResponse
             {
                 IsSuccess = true,
