@@ -30,8 +30,7 @@ namespace ApiPlayground
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiPlayground", Version = "v1" });
                 c.OperationFilter<AddRequiredHeaderParameter>();
             });
-            services.AddDbContext<DbContextClass>(options =>
-                options.UseMySQL(Configuration.GetConnectionString("Default")));
+            services.AddDbContext<DbContextClass>(options => options.UseMySql(Configuration.GetConnectionString("Default"), ServerVersion.AutoDetect(Configuration.GetConnectionString("Default"))));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.RequireHttpsMetadata = true;
