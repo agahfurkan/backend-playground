@@ -1,4 +1,9 @@
 # backend-playground
+## Getting Started
+- Create a new Mysql database called 'apiplaygrounddb'.
+- To create all tables and fill them with data, import apiplaygrounddb.sql.
+- Update the credentials in appsettings.json.
+
 ## Table Scripts
 ```sql
 BEGIN
