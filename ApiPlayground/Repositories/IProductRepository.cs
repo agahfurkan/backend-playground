@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ApiPlayground.Entities;
 
-namespace ApiPlayground.Repositories
+namespace ApiPlayground.Repositories;
+
+public interface IProductRepository : IBaseRepository<ProductEntity>
 {
-    public interface IProductRepository : IBaseRepository<ProductEntity>
-    {
-        Task<List<ProductEntity>> GetProductsByCategoryId(int categoryId, int pageIndex, int pageLength);
-    }
+    Task<List<ProductEntity>> GetProductsByCategoryId(int categoryId, int pageIndex, int pageLength);
+    Task<ProductEntity> GetProductsByProductId(int productId);
 }
